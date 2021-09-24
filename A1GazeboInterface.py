@@ -258,7 +258,7 @@ class A1GazeboInterface:
             for motor_id in range(12):
                 command[motor_id * 5] = cmd[motor_id]
                 command[motor_id * 5 + 1] = self.kps[motor_id]
-                command[motor_id * 5 + 3] = self.motor_kds[motor_id]
+                command[motor_id * 5 + 3] = self.kds[motor_id]
             self.robot_interface.send_command(command)
         else:
             for motor_id in range(12):
@@ -301,7 +301,11 @@ class A1GazeboInterface:
             return None
 
     def GetTimeSinceReset(self):
-        return rospy.get_time() - self.resetTime
+        if self.use_real_robot:
+            return time.time()-self.resetTime
+        else:
+            return rospy.get_time() - self.resetTime
+
 
     def sendControllerCommand(self,inputCommand):
         inputVec,buttons = inputCommand.transformToPosControl()
