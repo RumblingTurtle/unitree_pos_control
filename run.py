@@ -34,8 +34,8 @@ startTime = time.time()
 currentTime = time.time()
 
 while  currentTime - startTime < MAX_TIME_SECS:
-    lin_speed, ang_speed, e_stop = getSpeedsLinAng(currentTime)
-
+    lin_speed, ang_speed, e_stop = getSpeedsLinAng(currentTime-startTime)
+    print(lin_speed)
     inputCommand = InputCommand(lin_speed,ang_speed)
 
     if not robot.sendControllerCommand(inputCommand):

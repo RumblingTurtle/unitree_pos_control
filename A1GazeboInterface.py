@@ -12,7 +12,7 @@ import time
 import numpy as np
 
 class A1GazeboInterface:
-    def __init__(self, rname = 'a1_ros', position_control=False,use_real_robot=False, update_rate=100):
+    def __init__(self, rname = 'a1', position_control=False,use_real_robot=False, update_rate=100):
 
         self.robot_name = rname
         self.pos_control = position_control
@@ -51,13 +51,14 @@ class A1GazeboInterface:
         self.footForceThreshold = 0.01
         self.lowState = LowState()
         self.lowCmd = LowCmd()
-        self.paramInit()
-        self.imu_sub = rospy.Subscriber("/trunk_imu", Imu, self.imuCallback)
         self.footForce_sub = [None] * 4
 
                 
         if not use_real_robot:
+            
             self.np = rospy.init_node(rname, anonymous=True)
+            self.paramInit()
+            self.imu_sub = rospy.Subscriber("/trunk_imu", Imu, self.imuCallback)
             self.footForce_sub[0] = rospy.Subscriber("/visual/FR_foot_contact/the_force", WrenchStamped,
                                                     self.FRfootCallback)
             self.footForce_sub[1] = rospy.Subscriber("/visual/FL_foot_contact/the_force", WrenchStamped,
@@ -72,9 +73,7 @@ class A1GazeboInterface:
                                                 MotorState, callback) for controller_name,callback in zip(controller_names,callbacks)]
             self.servo_pub = [rospy.Publisher("/" + self.robot_name + controller_name +"/command", MotorCmd, queue_size=10) for controller_name in controller_names]
             
-            time.sleep(2)
             self.resetTime = rospy.get_time()
-
         else:
             self.robot_interface = RobotInterface()
 
@@ -87,8 +86,12 @@ class A1GazeboInterface:
             self.a1_robot = RobotController.Robot(body, legs, True, 1/update_rate)
             self.inverseKinematics = robot_IK.InverseKinematics(body, legs)
 
+        if not use_real_robot:
             self.orientation_sub = rospy.Subscriber("/trunk_imu", Imu, self.a1_robot.imu_orientation)
+        else:
+            pass #TODO
         
+        time.sleep(2)
 
         self.actions = []
 

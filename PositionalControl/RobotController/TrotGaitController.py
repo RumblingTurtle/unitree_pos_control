@@ -105,8 +105,8 @@ class TrotGaitController(GaitController):
                 pitch_compensation = 0.0
                 # print(roll_compensation)
                 # print(pitch_compensation)
-                print(state.ticks)
-                print(new_foot_locations[1][1])
+                #print(state.ticks)
+                #print(new_foot_locations[1][1])
                 rot = rotxyz(roll_compensation,pitch_compensation,0)
                 new_foot_locations = np.matmul(rot,new_foot_locations)
             state.ticks += 1
