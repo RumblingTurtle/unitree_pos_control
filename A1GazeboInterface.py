@@ -1,5 +1,4 @@
 import re
-import rospy
 from unitree_legged_msgs.msg import LowState
 from unitree_legged_msgs.msg import LowCmd
 from unitree_legged_msgs.msg import MotorState
@@ -57,6 +56,7 @@ class A1GazeboInterface:
 
                 
         if not use_real_robot:
+            import rospy
             self.np = rospy.init_node(rname, anonymous=True)
             self.footForce_sub[0] = rospy.Subscriber("/visual/FR_foot_contact/the_force", WrenchStamped,
                                                     self.FRfootCallback)
